@@ -13,7 +13,7 @@ A simple habit tracker built with Laravel and Livewire.
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/habit-tracker.git
+   git clone https://github.com/omimouni/habit-tracker.git
    cd habit-tracker
    ```
 
