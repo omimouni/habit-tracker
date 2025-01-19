@@ -13,7 +13,7 @@
             </a>
 
             {{-- Logout Button --}}
-            <a wire:confirm="Are you sure you want to logout?" wire:click="logout" class="text-sm text-lg font-bold cursor-pointer text-error btn btn-ghost btn-xs">
+            <a wire:confirm="Are you sure you want to logout?" wire:click="logout" class="text-sm font-bold cursor-pointer text-error btn btn-ghost btn-xs">
                 <i class="fa-solid fa-right-from-bracket"></i>
             </a>
         </div>
@@ -40,11 +40,30 @@
         </div>
     </div>
 
-    <div class="border-t-2 border-dashed border-primary"></div>
+    <div class="mt-4">
+        <ul class="flex items-center justify-start gap-2">
+            <li><a wire:click="setTab('calendar')" class="relative block px-3 py-2 rounded-b-none {{ $current_tab === 'calendar' ? 'bg-primary text-white' : 'bg-base-200 hover:bg-base-300' }}">Calendar</a></li>
+            <li><a wire:click="setTab('habits')" class="relative block px-3 py-2 rounded-b-none {{ $current_tab === 'habits' ? 'bg-primary text-white' : 'bg-base-200 hover:bg-base-300' }}">Habits</a></li>
+        </ul>
+        <div class="border-t-2 border-primary"></div>
+    </div>
 
     {{-- Habit Tracking Table --}}
+    @if ($current_tab === 'calendar')
     <div class="mt-3 md:mt-5">
-        <div class="overflow-x-auto bg-base-100" id="habit-tracker">
+        <div class="overflow-x-auto bg-base-100" id="habit-tracker" 
+             x-data 
+             x-init="setTimeout(() => {
+                const today = new Date().getDate();
+                const todayCell = document.querySelector(`#habit-${today - 1}`);
+                if (todayCell) {
+                    todayCell.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start',
+                        inline: 'center'
+                    });
+                }
+             }, 200)">
             <table class="table table-zebra table-xs md:table-sm">
                 {{-- Table Header with Days --}}
                 <thead>
@@ -58,7 +77,7 @@
                                 <span class="block w-8 font-sans text-xs md:w-10">{{$i + 1}}</span>
                             </div>
                             </th>
-                        @endfor
+                            @endfor
                     </tr>
                 </thead>
                 {{-- Table Body with Habits --}}
@@ -76,29 +95,147 @@
                                 wire:click="toggle({{ $habit->id }}, {{ $j }})"
                                 {{ $habit->completions->contains('completed_at', now()->startOfMonth()->addDays($j)) ? 'checked' : '' }}
                                 {{ $j + 1 < now()->day ? 'disabled="disabled"' : '' }}
-                                class="checkbox checkbox-xs md:checkbox-sm">
+                                class="checkbox checkbox-xs checkbox-primary md:checkbox-sm">
                             </td>
-                        @endfor
+                            @endfor
                     </tr>
                     @endforeach
                 </tbody>
             </table>
         </div>
     </div>
+    @endif
+
+    @if ($current_tab === 'habits')
+    <div class="mt-3 md:mt-5">
+        <div class="bg-base-100 rounded-box">
+            {{-- Add New Habit Button --}}
+            <div class="flex justify-end p-4">
+                <button class="btn btn-primary btn-sm" wire:click="$toggle('showNewHabitModal')">
+                    <i class="fa-solid fa-plus"></i> New Habit
+                </button>
+            </div>
+
+            {{-- Habits List --}}
+            <div class="overflow-x-auto">
+                <table class="table table-zebra">
+                    <thead>
+                        <tr>
+                            <th>Color</th>
+                            <th>Name</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($habits as $habit)
+                        <tr>
+                            <td>
+                                <div class="w-6 h-6 rounded" style="background-color: {{ $habit->color }};"></div>
+                            </td>
+                            <td class="font-bold">{{ $habit->name }}</td>
+                            <td>{{ $habit->created_at->format('M d, Y') }}</td>
+                            <td class="flex gap-2">
+                                <button class="btn btn-ghost btn-xs" wire:click="editHabit({{ $habit->id }})">
+                                    <i class="fa-solid fa-pen"></i>
+                                </button>
+                                <button class="btn btn-ghost btn-xs text-error" 
+                                    wire:confirm="Are you sure you want to delete this habit?"
+                                    wire:click="deleteHabit({{ $habit->id }})">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    {{-- Habits Management Modal --}}
+    <div x-data="{ 
+            open: false,
+            // Watch Livewire's showNewHabitModal property
+            init() {
+                this.$watch('$wire.showNewHabitModal', value => {
+                    this.open = value;
+                });
+            }
+        }" 
+        @keydown.escape.window="open = false; $wire.showNewHabitModal = false"
+        :class="{ 'modal-open': open }"
+        class="modal">
+        
+        {{-- Modal Content Box --}}
+        <div class="modal-box">
+            {{-- Modal Header --}}
+            <h3 class="text-lg font-bold">
+                {{ $editingHabit ? 'Edit Habit' : 'New Habit' }}
+            </h3>
+
+            {{-- Habit Form --}}
+            <form wire:submit.prevent="saveHabit">
+                {{-- Name Input Field --}}
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text">Habit Name</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        wire:model.live="habitForm.name" 
+                        class="input input-bordered" 
+                        placeholder="Enter habit name"
+                        autofocus
+                    />
+                    @error('habitForm.name') 
+                        <span class="mt-1 text-sm text-error">{{ $message }}</span> 
+                    @enderror
+                </div>
+
+                {{-- Color Picker Field --}}
+                <div class="mt-4 form-control">
+                    <label class="label">
+                        <span class="label-text">Color</span>
+                    </label>
+                    <input 
+                        type="color" 
+                        wire:model.live="habitForm.color" 
+                        class="w-full h-10 rounded cursor-pointer" 
+                    />
+                    @error('habitForm.color') 
+                        <span class="mt-1 text-sm text-error">{{ $message }}</span> 
+                    @enderror
+                </div>
+
+                {{-- Modal Action Buttons --}}
+                <div class="modal-action">
+                    {{-- Cancel Button --}}
+                    <button 
+                        type="button" 
+                        class="btn" 
+                        @click="open = false; $wire.showNewHabitModal = false"
+                    >
+                        Cancel
+                    </button>
+                    {{-- Submit Button --}}
+                    <button 
+                        type="submit" 
+                        class="btn btn-primary"
+                    >
+                        {{ $editingHabit ? 'Update' : 'Create' }}
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        {{-- Modal Backdrop --}}
+        <div 
+            class="cursor-pointer modal-backdrop" 
+            @click="open = false; $wire.showNewHabitModal = false"
+        ></div>
+    </div>
 </div>
 
 {{-- JavaScript for Auto-scrolling to Current Day --}}
-@script
-<script>
-    // Get the habit tracker container
-    container = document.getElementById('habit-tracker');
-
-    // Scroll to today's column (positioned at start of view)
-    today_row = container.querySelector(`#habit-${new Date().getDate()}`);
-    today_row.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-        inline: 'center'
-    });
-</script>
-@endscript
