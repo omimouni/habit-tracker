@@ -64,6 +64,10 @@
                     });
                 }
              }, 200)">
+
+            @if (count($habits) === 0)
+            <h4 class="py-4 text-4xl font-bold text-center font-fancy">Create your first habit! </h4>
+            @else
             <table class="table table-zebra table-xs md:table-sm">
                 {{-- Table Header --}}
                 <thead>
@@ -101,6 +105,7 @@
                     @endforeach
                 </tbody>
             </table>
+            @endif
         </div>
     </div>
     @endif
@@ -116,6 +121,9 @@
             </div>
 
             {{-- Habits List with Drag & Drop --}}
+            @if (count($habits) === 0)
+            <h4 class="text-4xl font-bold text-center font-fancy">Create your first habit! </h4>
+            @else
             <div class="overflow-x-auto">
                 <table class="table table-zebra">
                     <thead>
@@ -172,6 +180,8 @@
                     </tbody>
                 </table>
             </div>
+            @endif
+
         </div>
     </div>
     @endif

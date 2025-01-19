@@ -39,6 +39,10 @@ class HabitTracker extends Component
         $this->selected_month = now()->month;
         $this->selected_year = now()->year;
 
+        if (count($this->habits) === 0) {
+            $this->current_tab = 'habits';
+        }
+
         if (!auth()->check()) {
             return redirect()->route('landing-page');
         }
