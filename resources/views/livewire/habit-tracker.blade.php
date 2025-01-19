@@ -1,24 +1,32 @@
 <div class="w-2/3 m-auto">
+    {{-- Navigation Bar --}}
     <div class="flex items-center justify-end py-5">
         <div class="flex items-center gap-1">
+            {{-- Home Button --}}
             <a href="{{ route('landing-page') }}" class="cursor-pointer text btn btn-ghost btn-xs">
                 <i class="fa-solid fa-house"></i>
             </a>
 
+            {{-- Dark Mode Toggle --}}
             <a class="btn btn-ghost btn-xs" @click="darkMode.toggleDarkMode()">
                 <i :class="darkMode.isDarkMode ? 'fa-solid fa-sun' : 'fa-solid fa-moon'"></i>
             </a>
 
+            {{-- Logout Button --}}
             <a wire:confirm="Are you sure you want to logout?" wire:click="logout" class="text-sm text-lg font-bold cursor-pointer text-error btn btn-ghost btn-xs">
                 <i class="fa-solid fa-right-from-bracket"></i>
             </a>
         </div>
     </div>
+
+    {{-- Header Section with Title and Date --}}
     <div class="flex items-center justify-between py-5">
+        {{-- Title --}}
         <h2 class="text-5xl">
             <span>Habit</span>
             <span class="font-bold font-fancy">Tracker</span>
         </h2>
+        {{-- Month/Year Display --}}
         <div class="flex items-center gap-5">
             <div>
                 <span class="text-xl">Month</span>
@@ -34,30 +42,34 @@
 
     <div class="border-t-2 border-dashed border-primary"></div>
 
+    {{-- Habit Tracking Table --}}
     <div class="mt-5">
         <div class="overflow-auto bg-base-100" id="habit-tracker">
             <table class="table table-zebra table-xs">
+                {{-- Table Header with Days --}}
                 <thead>
                     <tr class="text-lg font-fancy">
                         <th class="text-center">Habit</th>
                         @for ($i = 0; $i < $month_days; $i++)
                             <th class="text-center">
-
+                            {{-- Day Header with Name and Number --}}
                             <div class="flex flex-col items-center justify-center {{ $i + 1 < now()->day ? 'text-gray-300' : '' }}">
                                 <span class="block w-10">{{ now()->startOfMonth()->addDays($i)->format('D') }}</span>
                                 <span class="block w-10 font-sans text-xs">{{$i + 1}}</span>
                             </div>
                             </th>
-                            @endfor
+                        @endfor
                     </tr>
                 </thead>
+                {{-- Table Body with Habits --}}
                 <tbody>
                     @foreach ($habits as $habit)
                     <tr>
-                        <!-- TODO: background to be habit specific -->
-                        <td class="sticky left-0 z-10 text-lg " style="background-color: {{ $habit->color }};">
+                        {{-- Habit Name Cell --}}
+                        <td class="sticky left-0 z-10 text-lg" style="background-color: {{ $habit->color }};">
                             <span class="block w-24 py-2 font-bold font-fancy">{{ $habit->name }}</span>
                         </td>
+                        {{-- Habit Checkboxes for Each Day --}}
                         @for ($j = 0; $j < $month_days; $j++)
                             <td class="text-center" id="habit-{{ $j }}">
                             <input type="checkbox"
@@ -66,25 +78,27 @@
                                 {{ $j + 1 < now()->day ? 'disabled="disabled"' : '' }}
                                 class="checkbox checkbox-xs">
                             </td>
-                            @endfor
+                        @endfor
                     </tr>
                     @endforeach
                 </tbody>
             </table>
         </div>
     </div>
-
 </div>
 
+{{-- JavaScript for Auto-scrolling to Current Day --}}
 @script
 <script>
+    // Get the habit tracker container
     container = document.getElementById('habit-tracker');
 
-    // Scroll to today 
-    today_row = container.querySelector(`#habit-${new Date().getDate() + 10}`);
+    // Scroll to today's column (positioned at start of view)
+    today_row = container.querySelector(`#habit-${new Date().getDate()}`);
     today_row.scrollIntoView({
         behavior: 'smooth',
-        block: 'center'
+        block: 'start',
+        inline: 'center'
     });
 </script>
 @endscript
