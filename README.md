@@ -2,6 +2,8 @@
 
 A simple habit tracker built with Laravel and Livewire.
 
+![Habit Tracker](public/screenshot.png)
+
 ## Installation
 
 1. Clone the repository:
