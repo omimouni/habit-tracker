@@ -1,7 +1,17 @@
 <div class="w-2/3 m-auto">
     <div class="flex items-center justify-end py-5">
-        <div>
-            <span class="text-sm text-lg font-bold">Welcome, {{ auth()->user()->name }} | <a wire:click="logout" class="text-sm text-lg font-bold cursor-pointer">Logout</a> </span>
+        <div class="flex items-center gap-1">
+            <a href="{{ route('landing-page') }}" class="cursor-pointer text btn btn-ghost btn-xs">
+                <i class="fa-solid fa-house"></i>
+            </a>
+
+            <a class="btn btn-ghost btn-xs" @click="darkMode.toggleDarkMode()">
+                <i :class="darkMode.isDarkMode ? 'fa-solid fa-sun' : 'fa-solid fa-moon'"></i>
+            </a>
+
+            <a wire:confirm="Are you sure you want to logout?" wire:click="logout" class="text-sm text-lg font-bold cursor-pointer text-error btn btn-ghost btn-xs">
+                <i class="fa-solid fa-right-from-bracket"></i>
+            </a>
         </div>
     </div>
     <div class="flex items-center justify-between py-5">
@@ -12,20 +22,20 @@
         <div class="flex items-center gap-5">
             <div>
                 <span class="text-xl">Month</span>
-                <span class="px-4 pb-1 text-2xl font-bold border-b-2 border-black border-dashed font-fancy">January</span>
+                <span class="px-4 pb-1 text-2xl font-bold border-b-2 border-dashed border-primary font-fancy">January</span>
             </div>
             <span>/</span>
             <div>
                 <span class="text-xl">Year</span>
-                <span class="px-4 pb-1 text-2xl font-bold border-b-2 border-black border-dashed font-fancy">2025</span>
+                <span class="px-4 pb-1 text-2xl font-bold border-b-2 border-dashed border-primary font-fancy">2025</span>
             </div>
         </div>
     </div>
 
-    <div class="border-t-2 border-gray-300 border-dashed"></div>
+    <div class="border-t-2 border-dashed border-primary"></div>
 
     <div class="mt-5">
-        <div class="overflow-auto bg-white" id="habit-tracker">
+        <div class="overflow-auto bg-base-100" id="habit-tracker">
             <table class="table table-zebra table-xs">
                 <thead>
                     <tr class="text-lg font-fancy">
@@ -45,7 +55,7 @@
                     @foreach ($habits as $habit)
                     <tr>
                         <!-- TODO: background to be habit specific -->
-                        <td class="sticky left-0 z-10 text-lg bg-white" style="background-color: {{ $habit->color }};">
+                        <td class="sticky left-0 z-10 text-lg " style="background-color: {{ $habit->color }};">
                             <span class="block w-24 py-2 font-bold font-fancy">{{ $habit->name }}</span>
                         </td>
                         @for ($j = 0; $j < $month_days; $j++)

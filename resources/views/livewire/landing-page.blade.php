@@ -1,6 +1,6 @@
 <div class="">
     <div class="">
-        <div class="flex items-center justify-center h-screen bg-gray-100">
+        <div class="flex items-center justify-center h-screen">
             <div>
                 <div class="text-center">
                     <h1 class="text-6xl font-bold font-fancy">Habit Tracker</h1>
