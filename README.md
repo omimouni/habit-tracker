@@ -67,9 +67,9 @@ Your application should now be running at http://localhost:8000
 
 - [x] Create and manage habits
 - [x] Track daily habit completions
-- [ ] View habit streaks and progress statistics
 - [x] User authentication and profiles
-- [ ] Responsive mobile design
-- [ ] Dark/Light theme toggle
+- [x] Responsive mobile design
+- [x] Dark/Light theme toggle
 - [ ] Organize habits into categories
+- [ ] View habit streaks and progress statistics
 
