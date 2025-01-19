@@ -2,7 +2,12 @@
 
 A simple habit tracker built with Laravel and Livewire.
 
-![Habit Tracker](public/screenshot.png)
+## Screenshots
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+    <img src="public/social.png" alt="Habit Tracker">
+    <img src="public/screenshot.png" alt="Habit Tracker">
+    <img src="public/screenshot2.png" alt="Habit Tracker">
+</div>
 
 ## Installation
 
@@ -73,3 +78,20 @@ Your application should now be running at http://localhost:8000
 - [ ] Organize habits into categories
 - [ ] View habit streaks and progress statistics
 
+
+## Google Analytics
+To enable Google Analytics tracking:
+
+1. Create a Google Analytics 4 property in your [Google Analytics account](https://analytics.google.com)
+
+2. Get your Measurement ID (starts with G-)
+
+3. Add these variables to your .env file:
+   ```bash
+   GOOGLE_ANALYTICS_ID=your_measurement_id
+   GOOGLE_ANALYTICS_ENABLED=true
+   ```
+
+The tracking code will be automatically included in the base layout when enabled. You can verify it's working by checking your Google Analytics real-time reports.
+
+Note: Analytics are only included in production environments when `GOOGLE_ANALYTICS_ENABLED` is set to true.
