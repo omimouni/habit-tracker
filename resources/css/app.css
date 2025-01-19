@@ -1,3 +1,48 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+/* Grid Pattern Styles */
+.pattern-grid {
+    @apply absolute inset-0 bg-repeat;
+    background-image: radial-gradient(currentColor 1px, transparent 1px);
+    background-size: 30px 30px;
+}
+
+/* Hero Section Styles */
+.hero-pattern {
+    @apply relative overflow-hidden;
+}
+
+.hero-pattern::before {
+    content: '';
+    @apply absolute inset-0 opacity-10;
+    background-image: radial-gradient(currentColor 1px, transparent 1px);
+    background-size: 30px 30px;
+}
+
+/* Wave Decoration */
+.wave-decoration {
+    @apply absolute bottom-0 left-0 right-0 w-full h-auto;
+    fill: currentColor;
+    fill-opacity: 0.1;
+}
+
+/* Feature Card Hover Effects */
+.feature-card {
+    @apply p-6 text-center transition-all duration-300 card bg-base-100;
+}
+
+.feature-card:hover {
+    @apply transform -translate-y-1 shadow-lg;
+}
+
+/* Icon Container */
+.feature-icon {
+    @apply text-4xl transition-transform duration-300 text-primary;
+}
+
+.feature-card:hover .feature-icon {
+    @apply transform scale-110;
+} 
