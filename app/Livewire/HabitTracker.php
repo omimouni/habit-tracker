@@ -13,9 +13,12 @@ class HabitTracker extends Component
 {
     public $habits = [];
 
+    public $selected_month = null;
+    public $selected_year = null;
+
     #[Url(as: 'tab')]
     public $current_tab = 'calendar';
-    
+
     /**
      * Modal state and form data
      */
@@ -33,6 +36,9 @@ class HabitTracker extends Component
 
     public function mount()
     {
+        $this->selected_month = now()->month;
+        $this->selected_year = now()->year;
+
         if (!auth()->check()) {
             return redirect()->route('landing-page');
         }
@@ -45,7 +51,7 @@ class HabitTracker extends Component
         $datetime = now()->startOfMonth()->addDays($day);
 
         $habit = Habit::find($habitId);
-        $completion =$habit->completions()->where('completed_at', $datetime)->first();
+        $completion = $habit->completions()->where('completed_at', $datetime)->first();
 
         if ($completion) {
             $completion->delete();
@@ -133,14 +139,51 @@ class HabitTracker extends Component
         ];
     }
 
+    /**
+     * Updates the order of habits using drag and drop
+     *
+     * @param array $items Array of habit IDs in their new order
+     */
+    public function updateOrder($items)
+    {
+        // Update each habit's order based on its position in the array
+        foreach ($items as $index => $item) {
+            Habit::where('id', $item['value'])->update(['order' => $index]);
+        }
+
+        // Refresh the habits list
+        $this->habits = auth()->user()->habits()->with('completions')->get();
+    }
+
+    /**
+     * Toggles the active state of a habit
+     *
+     * @param int $habitId The ID of the habit to toggle
+     */
+    public function toggleActive($habitId)
+    {
+        $habit = Habit::find($habitId);
+        $habit->update([
+            'is_active' => !$habit->is_active
+        ]);
+
+        // Refresh the habits list
+        $this->habits = auth()->user()->habits()->with('completions')->get();
+    }
+
+    /**
+     * Renders only active habits in the calendar view
+     */
     public function render()
     {
         $month_days = now()->daysInMonth();
 
-        // $habits = Habit::with('completions')->get();
+        // Filter habits for calendar view to show only active ones
+        $calendarHabits = $this->habits->where('is_active', true)->sortBy('order');
 
         return view('livewire.habit-tracker', [
             'month_days' => $month_days,
+            'calendarHabits' => $calendarHabits,
         ]);
     }
 }

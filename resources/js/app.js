@@ -1,4 +1,5 @@
 import './bootstrap';
+import 'livewire-sortable';
 
 Alpine.store('darkMode', {
     isDarkMode: localStorage.getItem('darkMode') === null 

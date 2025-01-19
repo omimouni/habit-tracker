@@ -6,7 +6,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class Habit extends Model
 {
-    protected $fillable = ['name', 'color', 'user_id'];
+    protected $fillable = [
+        'name',
+        'color',
+        'is_active',
+        'order',
+        'user_id'
+    ];
+
+    protected $casts = [
+        'is_active' => 'boolean',
+        'order' => 'integer'
+    ];
 
     public function completions()
     {
