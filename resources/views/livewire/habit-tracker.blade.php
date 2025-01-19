@@ -1,6 +1,6 @@
-<div class="w-2/3 m-auto">
+<div class="w-full px-2 m-auto md:w-2/3 md:px-0">
     {{-- Navigation Bar --}}
-    <div class="flex items-center justify-end py-5">
+    <div class="flex items-center justify-end py-3 md:py-5">
         <div class="flex items-center gap-1">
             {{-- Home Button --}}
             <a href="{{ route('landing-page') }}" class="cursor-pointer text btn btn-ghost btn-xs">
@@ -19,23 +19,23 @@
         </div>
     </div>
 
-    {{-- Header Section with Title and Date --}}
-    <div class="flex items-center justify-between py-5">
+    {{-- Header Section with Title and Date - Make it stack on mobile --}}
+    <div class="flex flex-col items-center justify-between gap-4 py-3 md:flex-row md:py-5 md:gap-0">
         {{-- Title --}}
-        <h2 class="text-5xl">
+        <h2 class="text-3xl md:text-5xl">
             <span>Habit</span>
             <span class="font-bold font-fancy">Tracker</span>
         </h2>
         {{-- Month/Year Display --}}
-        <div class="flex items-center gap-5">
+        <div class="flex items-center gap-3 text-sm md:gap-5 md:text-base">
             <div>
-                <span class="text-xl">Month</span>
-                <span class="px-4 pb-1 text-2xl font-bold border-b-2 border-dashed border-primary font-fancy">January</span>
+                <span class="text-lg md:text-xl">Month</span>
+                <span class="px-2 pb-1 text-xl font-bold border-b-2 border-dashed md:px-4 md:text-2xl border-primary font-fancy">January</span>
             </div>
             <span>/</span>
             <div>
-                <span class="text-xl">Year</span>
-                <span class="px-4 pb-1 text-2xl font-bold border-b-2 border-dashed border-primary font-fancy">2025</span>
+                <span class="text-lg md:text-xl">Year</span>
+                <span class="px-2 pb-1 text-xl font-bold border-b-2 border-dashed md:px-4 md:text-2xl border-primary font-fancy">2025</span>
             </div>
         </div>
     </div>
@@ -43,19 +43,19 @@
     <div class="border-t-2 border-dashed border-primary"></div>
 
     {{-- Habit Tracking Table --}}
-    <div class="mt-5">
-        <div class="overflow-auto bg-base-100" id="habit-tracker">
-            <table class="table table-zebra table-xs">
+    <div class="mt-3 md:mt-5">
+        <div class="overflow-x-auto bg-base-100" id="habit-tracker">
+            <table class="table table-zebra table-xs md:table-sm">
                 {{-- Table Header with Days --}}
                 <thead>
-                    <tr class="text-lg font-fancy">
-                        <th class="text-center">Habit</th>
+                    <tr class="text-base md:text-lg font-fancy">
+                        <th class="sticky left-0 z-20 text-center bg-base-100">Habit</th>
                         @for ($i = 0; $i < $month_days; $i++)
-                            <th class="text-center">
+                            <th class="text-center min-w-12">
                             {{-- Day Header with Name and Number --}}
                             <div class="flex flex-col items-center justify-center {{ $i + 1 < now()->day ? 'text-gray-300' : '' }}">
-                                <span class="block w-10">{{ now()->startOfMonth()->addDays($i)->format('D') }}</span>
-                                <span class="block w-10 font-sans text-xs">{{$i + 1}}</span>
+                                <span class="block w-8 md:w-10">{{ now()->startOfMonth()->addDays($i)->format('D') }}</span>
+                                <span class="block w-8 font-sans text-xs md:w-10">{{$i + 1}}</span>
                             </div>
                             </th>
                         @endfor
@@ -65,18 +65,18 @@
                 <tbody>
                     @foreach ($habits as $habit)
                     <tr>
-                        {{-- Habit Name Cell --}}
-                        <td class="sticky left-0 z-10 text-lg" style="background-color: {{ $habit->color }};">
-                            <span class="block w-24 py-2 font-bold font-fancy">{{ $habit->name }}</span>
+                        {{-- Habit Name Cell - Make it sticky and ensure it stays visible --}}
+                        <td class="sticky left-0 z-10 text-base md:text-lg" style="background-color: {{ $habit->color }};">
+                            <span class="block w-20 py-1 font-bold md:w-24 md:py-2 font-fancy">{{ $habit->name }}</span>
                         </td>
                         {{-- Habit Checkboxes for Each Day --}}
                         @for ($j = 0; $j < $month_days; $j++)
-                            <td class="text-center" id="habit-{{ $j }}">
+                            <td class="text-center min-w-12" id="habit-{{ $j }}">
                             <input type="checkbox"
                                 wire:click="toggle({{ $habit->id }}, {{ $j }})"
                                 {{ $habit->completions->contains('completed_at', now()->startOfMonth()->addDays($j)) ? 'checked' : '' }}
                                 {{ $j + 1 < now()->day ? 'disabled="disabled"' : '' }}
-                                class="checkbox checkbox-xs">
+                                class="checkbox checkbox-xs md:checkbox-sm">
                             </td>
                         @endfor
                     </tr>
