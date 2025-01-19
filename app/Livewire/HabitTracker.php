@@ -16,7 +16,11 @@ class HabitTracker extends Component
 
     public function mount()
     {
-        $this->habits = Habit::with('completions')->get();
+        if (!auth()->check()) {
+            return redirect()->route('landing-page');
+        }
+
+        $this->habits = auth()->user()->habits()->with('completions')->get();
     }
 
     public function toggle($habitId, $day)
@@ -33,6 +37,12 @@ class HabitTracker extends Component
                 'completed_at' => $datetime,
             ]);
         }
+    }
+
+    public function logout()
+    {
+        auth()->logout();
+        return redirect()->route('landing-page');
     }
 
     public function render()

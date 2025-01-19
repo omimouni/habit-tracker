@@ -4,8 +4,10 @@ namespace Database\Seeders;
 
 use App\Models\Habit;
 use App\Models\HabitCompletion;
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class HabitSeeder extends Seeder
 {
@@ -32,9 +34,14 @@ class HabitSeeder extends Seeder
             "#1abc9c"
         ];
 
+        $user = User::create([
+            'name' => 'John Doe',
+            'email' => 'john@example.com',
+        ]);
+
         foreach ($habits as $habit) {
             // Create the habit
-            $habit = Habit::create(['name' => $habit, 'color' => $colors[array_rand($colors)]]);
+            $habit = Habit::create(['name' => $habit, 'color' => $colors[array_rand($colors)], 'user_id' => $user->id]);
 
             // Add a random completion for the habit
             HabitCompletion::create([

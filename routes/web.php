@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Livewire\HabitTracker;
+use App\Livewire\LandingPage;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,5 +16,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', HabitTracker::class);
+Route::get('/', LandingPage::class)->name('landing-page');
+Route::get('/tracker', HabitTracker::class)->name('tracker');
 
+Route::get('/google/callback', [AuthController::class, 'callback'])->name('google.callback');
+Route::get('/google/redirect', [AuthController::class, 'redirect'])->name('google.redirect');

@@ -9,6 +9,7 @@
         "php": "^8.2",
         "laravel-frontend-presets/tall": "^8.0",
         "laravel/framework": "^11.31",
+        "laravel/socialite": "^5.16",
         "laravel/tinker": "^2.9",
         "livewire/livewire": "^3.5"
     },
